@@ -8,10 +8,12 @@ const fs = require('fs');
 const path = require('path');
 const {
     BilaraData,
-    ExecGit,
     ImportHtml,
 
 } = require('../../index');
+const {
+    ExecGit,
+} = require('scv-bilara');
 const LOCAL = path.join(__dirname, '../../local');
 const BILARA_DATA = path.join(LOCAL, '/bilara-data');
 

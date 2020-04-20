@@ -1,0 +1,67 @@
+*{
+	color: #444;
+}
+p {
+line-height: 2;
+background-color: cornsilk;
+white-space: nowrap;
+}
+.speaker{
+	background: cyan;
+}
+.uddanagatha p{
+	color: pink;
+	font-style:italic;
+}
+.uddana p{
+	color: purple;
+	font-style:italic;
+}
+p.uddana-intro{
+	font-style:italic;
+	color: red;
+}
+aside{
+	font-size: small;
+	color: grey;
+	border: 3px dotted crimson;
+}
+.end, .endsection, .endvagga, .endsutta, .endbook{
+text-align: center;
+}
+.end:before{
+	content: "end";
+	font-weight: bold;
+	display:block;
+}
+.endsection:before{
+	content: "endsection";
+		font-weight: bold;
+	display:block;
+}
+.endvagga:before{
+	content: "endvagga";
+		font-weight: bold;
+	display:block;
+}
+.endsutta:before{
+	content: "endsutta";
+		font-weight: bold;
+	display:block;
+}
+.endbook:before{
+	content: "endbook";
+		font-weight: bold;
+	display:block;
+}
+.evam{
+	font-variant-caps: small-caps;
+	color: green;
+}
+.namo{
+	text-align: center;
+	font-style: italic;
+}
+x{
+	display: block;
+}
