@@ -1,3 +1,11 @@
 #!/bin/bash
 DIR=`dirname $0`
-$DIR/js/import-html.js $*
+SRC=test/data/pli_remainder_segmented5
+#$DIR/js/import-html.js $*
+#$DIR/js/import-html.js -s $SRC/abhidhamma/ds
+#$DIR/js/import-html.js -s $SRC/abhidhamma/dt
+#$DIR/js/import-html.js -s $SRC/abhidhamma/kv
+$DIR/js/import-html.js -s $SRC/abhidhamma/patthana
+#$DIR/js/import-html.js -s $SRC/abhidhamma/pp
+#$DIR/js/import-html.js -s $SRC/abhidhamma/vb
+#$DIR/js/import-html.js -s $SRC/abhidhamma/ya

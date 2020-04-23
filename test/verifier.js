@@ -26,7 +26,7 @@
     this.timeout(10*1000);
     var logLevel = false;
 
-    it("TESTTESTdefault ctor", ()=>{
+    it("default ctor", ()=>{
         var ver = new Verifier();
         should(ver).properties({
             languages: ['pli', 'de', 'en', 'jpn', 'pt'],
@@ -54,7 +54,7 @@
             forceRenumber,
         });
     });
-    it("TESTTESTinitialize() is required", done=>{
+    it("initialize() is required", done=>{
         (async function() { try {
             var ver = new Verifier({logLevel});
             should.throws(()=>{
@@ -593,7 +593,7 @@
             done();
         } catch(e) { done(e); }})();
     });
-    it("TESTTESTverify() maps dn1", done=>{
+    it("verify() maps dn1", done=>{
         (async function() { try {
             var root = TEST_BILARA;
             var mapFile = path.join(__dirname, "data", "mapdn1.json");
@@ -666,7 +666,7 @@
             done();
         } catch(e) { done(e); }})();
     });
-    it("TESTTESTverify() maps dn2", done=>{
+    it("verify() maps dn2", done=>{
         (async function() { try {
             var root = TEST_BILARA;
             var ver = await new Verifier({

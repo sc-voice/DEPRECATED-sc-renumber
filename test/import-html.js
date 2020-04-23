@@ -513,4 +513,45 @@
         should(segHtml['ne37:205.4']).equal(`{}<br>`);
         should(segHtml['ne37:205.5']).equal(`{}</p>`);
     });
+    it("TESTTESTimport(...) imports patthana1.1 file", ()=>{
+        var ih = new ImportHtml({
+            srcRoot: TEST_DATA,
+            dstRoot: BILARA_TEST,
+            dstFolder: "sutta",
+            logLevel,
+        });
+        var res = ih.import('patthana1.1.html');
+        var {
+            segRoot,
+            segRef,
+            segHtml,
+            segVar,
+            suid,
+            segments,
+            rootLang,
+            transTextLength,
+        } = res;
+        var SUID = 'patthana1.1';
+        should(suid).equal(SUID);
+        should(rootLang).equal('pli');
+        should(segRoot[`${SUID}:59.1`]).match(/Paccayaniddeso./);
+        should(segRoot[`${SUID}:60.0.1`]).match(/1.1.3. Pucchāvāra/);
+        should(segRoot[`${SUID}:60.0.2`]).match(/1.1.3.1. Paccayānuloma/);
+        should(segRoot[`${SUID}:60.0.3`]).match(/1.3.1.1. Ekamūlaka/);
+        should(segRoot[`${SUID}:60.0.4`]).match(/1.3.1.1.1. Kusalapada/);
+        should(segRoot[`${SUID}:60.1`]).match(/Siyā kusalaṃ/);
+        should(segRoot[`${SUID}:61.0`]).match(/1.3.1.1.2. Akusalapada/);
+        should(segRoot[`${SUID}:61.1`]).match(/Siyā akusalaṃ/);
+
+        should(segHtml[`${SUID}:59.1`]).equal("<p class='endsutta'>{}</p>");
+        should(segHtml[`${SUID}:60.0.1`]).equal("<h3>{}</h3>");
+        should(segHtml[`${SUID}:60.0.2`]).equal("<h4>{}</h4>");
+        should(segHtml[`${SUID}:60.0.3`]).equal("<h5>{}</h5>");
+        should(segHtml[`${SUID}:60.0.4`]).equal("<h6>{}</h6>");
+        should(segHtml[`${SUID}:60.1`]).equal("<p>{}</p>");
+        should(segHtml[`${SUID}:61.0`]).equal("<h6>{}</h6>");
+        should(segHtml[`${SUID}:61.1`]).equal("<p>{}</p>");
+
+        should(transTextLength).equal(0);
+    });
 })

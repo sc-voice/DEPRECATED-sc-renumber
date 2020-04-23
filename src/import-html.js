@@ -21,9 +21,11 @@
             this.segVar = {};
             this.segRoot = {};
             this.segTrans = {};
+            this.transTextLength = 0;
             this.segRef = {};
             this.segHtml = { };
             this.header = 0;
+            this.heading = 0;
             this.prevLine = '';
             this.div = 0;
             this.sc = '';
@@ -104,6 +106,7 @@
         }
 
         importH(line, nextLine, h) {
+            this.heading++;
             var {
                 suid,
                 segid,
@@ -113,7 +116,9 @@
                 segRoot,
                 segTrans,
                 segHtml,
+                heading,
             } = this;
+            var nextHdg = /<h/.test(nextLine);
             var h = line.substring(1,3);
             if (h === 'h1') {
                 var text = this.rootText(line);
@@ -127,18 +132,26 @@
                     var nextSc = this.scOfLine(nextLine);
                     var segParts = segid.segmentParts();
                     if (nextSc === sc) {
-                        this.segid = 
-                        segid = new SuttaCentralId(`${suid}:1.0.1`);
+                        this.segid = segid = 
+                            new SuttaCentralId(`${suid}:1.0.1`);
                     } else if (segParts.length === 2) {
-                        this.segid = 
-                        segid = new SuttaCentralId(`${suid}:1.0`);
+                        this.segid = segid = 
+                            new SuttaCentralId(`${suid}:1.0`);
                     } else {
                         // e.g., ds1.2.html first h3
                     }
                     this.segid = segid.add(0,0,1);
                 } else {
-                    segid = new SuttaCentralId(`${suid}:${Number(sc)+1}.0`);
-                    this.segid = segid.add(0,1);
+                    var sc1 = Number(sc)+1;
+                    if (heading > 1 || nextHdg) {
+                        segid = new SuttaCentralId(
+                            `${suid}:${sc1}.0.${heading}`);
+                    } else {
+                        segid = new SuttaCentralId(`${suid}:${sc1}.0`);
+                    }
+                    if (!nextHdg) {
+                        this.segid = new SuttaCentralId(`${suid}:${sc1}.1`);
+                    }
                 }
                 this.segid_1 = segid;
                 segRoot[segid.scid] = this.rootText(line);
@@ -182,6 +195,7 @@
             var lastSegParts = segid_1.segmentParts();
             var curSegParts = segid.segmentParts();
             var cls = '';
+            this.heading = 0;
             if (/p class=/.test(line)) {
                 cls = line.split('class="')[1].split('"')[0];
             }
@@ -305,6 +319,24 @@
             if (element === 'h3') {
                 return `<h3>{}</h3>`
             }
+            if (element === 'h4') {
+                return `<h4>{}</h4>`
+            }
+            if (element === 'h5') {
+                return `<h5>{}</h5>`
+            }
+            if (element === 'h6') {
+                return `<h6>{}</h6>`
+            }
+            if (element === 'h7') {
+                return `<h7>{}</h7>`
+            }
+            if (element === 'h8') {
+                return `<h8>{}</h8>`
+            }
+            if (element === 'h9') {
+                return `<h9>{}</h9>`
+            }
 
             return '{}';
         }
@@ -330,7 +362,9 @@
         transText(line) {
             var parts = line.split('<b>');
             parts.shift(); // discard stuff preceding <b>
-            return parts.map(p=>p.replace(/<\/b>.*/,'')).join('\n');
+            var text = parts.map(p=>p.replace(/<\/b>.*/,'')).join('\n');
+            this.transTextLength += text.length;
+            return text;
         }
 
     }
@@ -405,6 +439,7 @@
                 segRef,
                 segVar,
                 segHtml,
+                transTextLength,
             } = importer;
             var outFolder = srcFolder 
                 ? path.join(dstFolder, nikayaFolder, srcFolder)
@@ -427,13 +462,17 @@
             }
 
             try { // write translation segments
-                var dstDir = path.join(dstRoot, 
-                    'translation', transLang, translator,
-                    outFolder);
-                fs.mkdirSync(dstDir, {recursive: true});
-                var dstPath = path.join(dstDir,
-                    `${suid}_translation-${transLang}-${translator}.json`);
-                fs.writeFileSync(dstPath, JSON.stringify(segTrans, null, 2));
+                if (transTextLength) {
+                    var dstDir = path.join(dstRoot, 
+                        'translation', transLang, translator,
+                        outFolder);
+                    fs.mkdirSync(dstDir, {recursive: true});
+                    var dstPath = path.join(dstDir,
+                        `${suid}_translation-${transLang}-${translator}`+
+                        `.json`);
+                    fs.writeFileSync(dstPath, 
+                    JSON.stringify(segTrans, null, 2));
+                }
                 var localPath = dstPath.replace(LOCAL_DIR,'').substring(1);
             } catch (e) {
                 console.error(`translation ${localPath}`, e.stack);
@@ -496,6 +535,7 @@
                 author,
                 translator,
                 transLang,
+                transTextLength,
                 segments: Object.keys(segRoot).map(k => ({[k]:segRoot[k]})),
             }
         }
