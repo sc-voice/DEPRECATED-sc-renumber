@@ -1,11 +1,64 @@
 #!/bin/bash
 DIR=`dirname $0`
 SRC=test/data/pli_remainder_segmented5
-#$DIR/js/import-html.js $*
-#$DIR/js/import-html.js -s $SRC/abhidhamma/ds
-#$DIR/js/import-html.js -s $SRC/abhidhamma/dt
-#$DIR/js/import-html.js -s $SRC/abhidhamma/kv
-$DIR/js/import-html.js -s $SRC/abhidhamma/patthana
-#$DIR/js/import-html.js -s $SRC/abhidhamma/pp
-#$DIR/js/import-html.js -s $SRC/abhidhamma/vb
-#$DIR/js/import-html.js -s $SRC/abhidhamma/ya
+
+ARGS=
+DOCS=
+while (( "$#" )); do
+  case "$1" in
+    -*|--*=) # unsupported flags
+      if [ "$ARGS" == "" ]; then
+        ARGS=$1
+      else
+          ARGS="$ARGS $1"
+      fi
+      shift
+      ;;
+    *) # preserve positional arguments
+      if [ "$DOCS" == "" ]; then
+          DOCS=$1
+      else
+          DOCS="$DOCS $1"
+      fi
+      shift
+      ;;
+  esac
+done
+echo "ARGS=[$ARGS]"
+echo "DOCS=[$DOCS]"
+
+if [ "$DOCS" == "" ]; then DOCS='all'; fi
+
+if [ "$DOCS" == "all" ] || [ "$DOCS" == "kn" ]; then
+    $DIR/js/import-html.js -s $SRC/sutta/kn/bv -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/cnd -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/cp -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/iti -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/ja -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/kp -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/mil -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/mnd -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/ne -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/pe -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/ps -df sutta
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/pv -df sutta
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/snp -df sutta
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/tha-ap -df sutta
+
+    # Thag was changed after import so we don't import it anymore
+    # $DIR/js/import-html.js -s $SRC/sutta/kn/thag -df sutta
+
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/thi-ap -df sutta
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/ud -df sutta
+    #$DIR/js/import-html.js -s $SRC/sutta/kn/vv -df sutta
+fi
+
+if [ "$DOCS" == "all" ] || [ "$DOCS" == "abhidhamma" ]; then
+    $DIR/js/import-html.js -s $SRC/abhidhamma/ds
+    $DIR/js/import-html.js -s $SRC/abhidhamma/dt
+    $DIR/js/import-html.js -s $SRC/abhidhamma/kv
+    $DIR/js/import-html.js -s $SRC/abhidhamma/patthana
+    $DIR/js/import-html.js -s $SRC/abhidhamma/pp
+    $DIR/js/import-html.js -s $SRC/abhidhamma/vb
+$DIR/js/import-html.js -s $SRC/abhidhamma/ya
+fi

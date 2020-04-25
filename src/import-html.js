@@ -27,6 +27,7 @@
             this.header = 0;
             this.heading = 0;
             this.prevLine = '';
+            this.paraPrefix = '';
             this.div = 0;
             this.sc = '';
             this.rootLang = opts.rootLang || 'pli';
@@ -50,9 +51,15 @@
             } else if (line.match(/^<\/?div/)) {
                 this.importDiv(line);
             } else if (line.match(/^<p/)) {
-                this.importText(line, prevLine);
+                this.importText(line, prevLine, nextLine);
             } else if (line.match(/^<a\b/)) {
-                this.importText(line, prevLine);
+                this.importText(line, prevLine, nextLine);
+            } else if (line.match(/<blockquote/)) {
+                this.paraPrefix = line;
+            } else if (line.match(/<\/blockquote/)) {
+                this.paraSuffix = line;
+            } else {
+                // console.log(`dbg ignore`, line);
             }
             this.prevLine = line;
         }
@@ -176,7 +183,7 @@
             }
         }
 
-        importText(line, prevLine) {
+        importText(line, prevLine, nextLine) {
             var {
                 segid_1,
                 section,
@@ -225,9 +232,17 @@
             varText && (segVar[segid.scid] = varText);
 
             // HTML
-            segHtml[segid.scid] = line.trim()
-                .replace(/<a.*\/a>/,'{}')
-                .replace(/"/g, "'");
+            var html = line.trim()
+                .replace(/<a.*\/a>/,'{}');
+            if (html.match(/<p/u)) {
+                html = `${this.paraPrefix}${html}`;
+                this.paraPrefix = '';
+            }
+            if (nextLine.match(/<\/blockquote/u)) {
+                html = `${html}${nextLine.trim()}`;
+            }
+            segHtml[segid.scid] = html.replace(/"/ug, "'");
+
 
             this.segid_1 = segid;
         }
@@ -236,42 +251,48 @@
             var {
                 suid,
                 segRoot,
+                segVar,
             } = this;
-            var segids = Object.keys(segRoot);
-            var segVar = {};
-            Object.keys(this.segVar).forEach(k=>{
-                var vk = this.segVar[k];
-                var termParts = vk.split('→')[0].split('|');
+            var rootIds = Object.keys(segRoot);
+            var segVarNew = {};
+            Object.keys(segVar).forEach(k=>{
+                var vk = segVar[k];
+                var arrowParts = vk.split('→');
+                var termParts = arrowParts[0].split('|');
                 if (termParts.length > 1) {
                     var term = termParts[termParts.length-1].trim();
                 } else {
                     var term = termParts[0].trim();
                 }
 
-                for (var i=0; i<segids.length; i++) {
-                    var segid = segids[i];
-                    var rv = segRoot[segid];
+                for (var i=0; i<rootIds.length; i++) {
+                    var rootId = rootIds[i];
+                    var rv = segRoot[rootId];
                     var imatch = rv.indexOf(term);
                     if (imatch>=0) { // keyword found in segment
-                        var sv = segVar[segid];
+                        var sv = segVarNew[rootId];
                         if (sv) {
                             if (sv.indexOf(term) >= 0) {
                                 continue; // already has variant
                             }
-                            segVar[segid] = `${sv} | ${vk}`;
+                            segVarNew[rootId] = `${sv} | ${vk}`;
                         } else {
-                            segVar[segid] = vk;
+                            segVarNew[rootId] = vk;
                         }
                         break;
                     }
                 };
-                if (i === segids.length) {
-                    segVar[k] = vk;
-                    logger.warn(
-                        `${suid}:${k} Could not match ${term} from ${vk}`);
+                if (i === rootIds.length) {
+                    segVarNew[k] = vk;
+                    if (arrowParts.length > 1) {
+                        logger.warn([ 
+                            `${suid}:${k}`,
+                            `Could not match ${term} from ${vk}`,
+                        ].join(' '));
+                    }
                 }
             });
-            this.segVar = segVar;
+            this.segVar = segVarNew;
         }
 
         htmlText(line, element) {

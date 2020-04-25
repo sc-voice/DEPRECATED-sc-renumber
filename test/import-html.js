@@ -252,14 +252,15 @@
         should(segHtml['thag21.1:0.2']).equal(`<p>{}</p>`);
         should(segHtml['thag21.1:0.3']).equal(`<p>{}</p>`);
         should(segHtml['thag21.1:0.4']).equal(`<h1>{}</h1></header>`);
-        should(segHtml['thag21.1:1.1']).equal(`<p>{}<br>`);
+        should(segHtml['thag21.1:1.1'])
+            .equal(`<blockquote class='gatha'><p>{}<br>`);
         should(segHtml['thag21.1:1.2']).equal(`{}<br>`);
         should(segHtml['thag21.1:1.3']).equal(`{}<br>`);
         should(segHtml['thag21.1:1.4']).equal(`{}</p>`);
         should(segHtml['thag21.1:74.1']).equal('<p>{}<br>');
         should(segHtml['thag21.1:74.2']).equal('{}<br>');
         should(segHtml['thag21.1:74.3']).equal('{}<br>');
-        should(segHtml['thag21.1:74.4']).equal('{}</p>');
+        should(segHtml['thag21.1:74.4']).equal('{}</p></blockquote>');
         should(segHtml['thag21.1:74.5']).equal(`<p class='endbook'>{}</p>`);
 
         should(segRef.hasOwnProperty('thag21.1:0.1')).equal(false);
@@ -507,13 +508,14 @@
         should(segRoot['ne37:205.2']).match(/(kāmadāti bhagavā)/);
         should(segRoot['ne37:205.3']).match(/Cittavūpasame ratā;/);
 
-        should(segHtml['ne37:205.1']).equal(`<p>{} <span class='speaker'>`);
+        should(segHtml['ne37:205.1']).equal(
+            `<blockquote class='gatha'><p>{} <span class='speaker'>`);
         should(segHtml['ne37:205.2']).equal(`{}</span><br>`);
         should(segHtml['ne37:205.3']).equal(`{}<br>`);
         should(segHtml['ne37:205.4']).equal(`{}<br>`);
-        should(segHtml['ne37:205.5']).equal(`{}</p>`);
+        should(segHtml['ne37:205.5']).equal(`{}</p></blockquote>`);
     });
-    it("TESTTESTimport(...) imports patthana1.1 file", ()=>{
+    it("import(...) imports patthana1.1 file", ()=>{
         var ih = new ImportHtml({
             srcRoot: TEST_DATA,
             dstRoot: BILARA_TEST,
@@ -551,6 +553,78 @@
         should(segHtml[`${SUID}:60.1`]).equal("<p>{}</p>");
         should(segHtml[`${SUID}:61.0`]).equal("<h6>{}</h6>");
         should(segHtml[`${SUID}:61.1`]).equal("<p>{}</p>");
+
+        should(transTextLength).equal(0);
+    });
+    it("import(...) imports dt2.2 file", ()=>{
+        var ih = new ImportHtml({
+            srcRoot: TEST_DATA,
+            dstRoot: BILARA_TEST,
+            dstFolder: "sutta",
+            logLevel,
+        });
+        var res = ih.import('dt2.2.html');
+        var {
+            segRoot,
+            segRef,
+            segHtml,
+            segVar,
+            suid,
+            segments,
+            rootLang,
+            transTextLength,
+        } = res;
+        var SUID = 'dt2.2';
+        should(suid).equal(SUID);
+        should(rootLang).equal('pli');
+        should(segRoot[`${SUID}:8.1`]).match(/Sappaṭighehi dhammehi/);
+        should(segHtml[`${SUID}:8.1`]).equal(`<p>{}`);
+        should(segRoot[`${SUID}:8.2`]).match(/upādādhammehi ye/);
+        should(segHtml[`${SUID}:8.2`]).equal(`{}`);
+        should(segRoot[`${SUID}:8.3`]).match(/Te dhammā catūhi/);
+        should(segHtml[`${SUID}:8.3`]).equal(`{}</p>`);
+        should(segRoot[`${SUID}:9.1`]).match(/Dasāyatanā sattarasa/);
+        should(segHtml[`${SUID}:9.1`])
+            .equal(`<blockquote class='gatha'><p>{}<br>`);
+        should(segRoot[`${SUID}:9.2`]).match(/Sattindriyā asaññābhavo/);
+        should(segHtml[`${SUID}:9.2`]).equal(`{}<br>`);
+        should(segRoot[`${SUID}:9.3`])
+            .match(/Paridevo sanidassanasappaṭighaṃ/);
+        should(segHtml[`${SUID}:9.3`]).equal(`{}<br>`);
+        should(segRoot[`${SUID}:9.4`]).match(/Anidassanaṃ punadeva/);
+        should(segHtml[`${SUID}:9.4`]).equal(`{}</p></blockquote>`);
+        should(segRoot[`${SUID}:10.1`]).match(/Saṅgahitena/);
+        should(segHtml[`${SUID}:10.1`])
+            .equal(`<p class='endsection'>{}</p>`);
+
+        should(transTextLength).equal(0);
+    });
+    it("import(...) imports dt2.3 file", ()=>{
+        var ih = new ImportHtml({
+            srcRoot: TEST_DATA,
+            dstRoot: BILARA_TEST,
+            dstFolder: "sutta",
+            logLevel,
+        });
+        var SUID = 'dt2.3';
+        var res = ih.import(`${SUID}.html`);
+        var {
+            segRoot,
+            segRef,
+            segHtml,
+            segVar,
+            suid,
+            segments,
+            rootLang,
+            transTextLength,
+        } = res;
+        should(suid).equal(SUID);
+        should(rootLang).equal('pli');
+        should(segRoot[`${SUID}:4.21`])
+            .equal('taṇhāpaccayā upādānena ye dhammā …');
+        should(segHtml[`${SUID}:4.21`]).equal('{}');
+        should(segVar[`${SUID}:4.21`])
+            .equal('upādānapaccayā kammabhavena (sya-all)');
 
         should(transTextLength).equal(0);
     });
