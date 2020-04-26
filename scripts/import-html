@@ -41,16 +41,16 @@ if [ "$DOCS" == "all" ] || [ "$DOCS" == "kn" ]; then
     $DIR/js/import-html.js -s $SRC/sutta/kn/ne -df sutta
     $DIR/js/import-html.js -s $SRC/sutta/kn/pe -df sutta
     $DIR/js/import-html.js -s $SRC/sutta/kn/ps -df sutta
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/pv -df sutta
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/snp -df sutta
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/tha-ap -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/pv -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/snp -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/tha-ap -df sutta
 
     # Thag was changed after import so we don't import it anymore
     # $DIR/js/import-html.js -s $SRC/sutta/kn/thag -df sutta
 
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/thi-ap -df sutta
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/ud -df sutta
-    #$DIR/js/import-html.js -s $SRC/sutta/kn/vv -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/thi-ap -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/ud -df sutta
+    $DIR/js/import-html.js -s $SRC/sutta/kn/vv -df sutta
 fi
 
 if [ "$DOCS" == "all" ] || [ "$DOCS" == "abhidhamma" ]; then
