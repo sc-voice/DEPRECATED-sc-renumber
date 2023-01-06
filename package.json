@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "check-node-version": "^4.0.1",
-    "json5": "^2.1.1",
+    "json5": "^2.2.2",
     "just-simple": "^0.1.4",
     "merkle-json": "^1.1.6",
     "nodegit": "^0.26.2",
